@@ -1,10 +1,10 @@
 from torch import nn
 
 class BaseMLPRegressor(nn.Module):
-    def __init__(self, input_size, output_size, hidden_layers, hidden_unit, dropout=0.1, activation=nn.ReLU):
+    def __init__(self, input_size, output_size, hidden_layers, hidden_unit, dropout=0.1, activation=nn.ReLU()):
         super().__init__()
         assert len(hidden_unit) == hidden_layers 
-        self.layers = []
+        self.layers = nn.ModuleList()
         for i in range(hidden_layers + 1):
             if i == 0:
                 self.layers.append(nn.Linear(input_size, hidden_unit[0]))
@@ -14,6 +14,7 @@ class BaseMLPRegressor(nn.Module):
                 self.layers.append(nn.Linear(hidden_unit[i-1], hidden_unit[i]))
         self.dropout = nn.Dropout(dropout)
         self.activation = activation
+        # print(len(self.layers))
 
     def forward(self, x):
         output = x
