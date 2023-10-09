@@ -28,12 +28,12 @@ features = ["floor_area_sqm", "age", "town_psqm", "regional_psqm", "nearest_mrt_
             "nearest_mall_dist", "near_mall_count", "near_mrt_count", "near_school_count", "nearest_school_dist", "date"]
 cat_features = ["flat_type", "flat_model", "region", "subzone", "planning_area", "town"]
 target = 'monthly_rent'
-res = train_kfold(features, cat_features, train_df_cleaned_final, target, 2, 
-            BaseMLPRegressor, model_conf, epoches=1, feature_norm='', 
+res = train_kfold(features, cat_features, train_df_cleaned_final, target, 10, 
+            BaseMLPRegressor, model_conf, epoches=100, feature_norm='', 
             device='cuda:0', lr=0.001, batch_size=128)
 
 generate_prediction(features, cat_features, train_final_df, test_final_df, target,
-            BaseMLPRegressor, model_conf, epoches=1000, feature_norm='', 
+            BaseMLPRegressor, model_conf, epoches=100, feature_norm='', 
             device='cuda:0', lr=0.001, batch_size=128)
 
 print(res)
