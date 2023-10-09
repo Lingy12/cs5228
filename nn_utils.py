@@ -121,11 +121,13 @@ def train_kfold(features, cat_features, df, target, k, model_class, model_params
     for metric in metrics:
       metrics[metric].append(eval(metric))
     print(f'fold: {i}: train_mse = {train_mae}, mae = {val_mae}, pcc = {val_pcc}, mape = {val_mape}')
-    
+  output = "Overall evaluation: " 
   print('Overall evaluation')
   for metric in metrics:
     arr = np.array(metrics[metric])
+    output += f'{metric}: average = {arr.mean()}, std_dev = {arr.std()}\n'
     print(f'{metric}: average = {arr.mean()}, std_dev = {arr.std()}')
+  return output
 
 def generate_prediction(features, cat_features, train_df, test_df, target, model_class, model_params, epoches, feature_norm, device, batch_size, lr):
   # if no normalize, then do not need to split features and cat_features
