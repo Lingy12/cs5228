@@ -65,7 +65,7 @@ def train_kfold(features, cat_features, df, target, k, feature_norm='', pipeline
   print('Overall evaluation')
   for metric in metrics:
         arr = np.array(metrics[metric])
-  print(f'{metric}: average = {arr.mean()}, std_dev = {arr.std()}')
+        print(f'{metric}: average = {arr.mean()}, std_dev = {arr.std()}')
 
 def generate_prediction(features, cat_features, train_df, test_df, target, feature_norm='', pipelines=[StandardScaler(), LinearRegression()]):
   # if no normalize, then do not need to split features and cat_features
