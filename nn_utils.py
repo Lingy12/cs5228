@@ -167,6 +167,6 @@ def generate_prediction(features, cat_features, train_df, test_df, target, model
   X_test = test_df[features].to_numpy()
   X_test = scaler.transform(X_test)
   y_test = np.zeros(len(X_test))
-  y = evaluate(model, X_test, y_test, batch_size, device)
-  out_df = pd.DataFrame(data=[(id, y[id]) for id in range(y.shape[0])], columns=['id', 'predicted']).set_index('id')
+  y = evaluate(model, X_test, y_test, batch_size, device).detach().cpu().numpy()
+  out_df = pd.DataFrame(data=[(id, y[id][0]) for id in range(y.shape[0])], columns=['id', 'predicted']).set_index('id')
   return out_df

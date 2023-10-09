@@ -1,5 +1,12 @@
 from torch import nn
 
+def round_to_nearest_50(n):
+    remainder = n % 50
+    if remainder < 25:
+        return n - remainder
+    else:
+        return n + (50 - remainder)
+    
 class BaseMLPRegressor(nn.Module):
     def __init__(self, input_size, output_size, hidden_layers, hidden_unit, dropout=0.1, activation=nn.ReLU()):
         super().__init__()
@@ -23,6 +30,7 @@ class BaseMLPRegressor(nn.Module):
             if i != len(self.layers) - 1:
                 output = self.activation(output)
                 output = self.dropout(output)
+        # output = round_to_nearest_50(output)
         return output
 
 

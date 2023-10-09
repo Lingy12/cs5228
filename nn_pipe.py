@@ -44,7 +44,8 @@ target = 'monthly_rent'
 #             device=device, lr=0.001, batch_size=128)
 
 out_df = generate_prediction(features, cat_features, train_final_df, test_final_df, target,
-            BaseMLPRegressor, model_conf, epoches=1000, feature_norm='', 
+            BaseMLPRegressor, model_conf, epoches=50, feature_norm='', 
             device=device, lr=0.001, batch_size=128)
-out_df.to_csv('my_pred.csv')
+# print(out_df)
+out_df.to_csv('my_pred_1.csv')
 # print(res)
