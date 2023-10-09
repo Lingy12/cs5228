@@ -14,6 +14,7 @@ test_df_cleaned_final = clean_data(test_final_df)
 test_df_cleaned_final = process_data(test_df_cleaned_final, mode='test')
 print(train_df_cleaned_final.columns)
 
+device = 'cuda:0' if torch.cuda.is_available() else 'cpu'
 
 model_conf = {
         "output_size":1, 
@@ -30,10 +31,10 @@ cat_features = ["flat_type", "flat_model", "region", "subzone", "planning_area",
 target = 'monthly_rent'
 res = train_kfold(features, cat_features, train_df_cleaned_final, target, 10, 
             BaseMLPRegressor, model_conf, epoches=100, feature_norm='', 
-            device='cuda:0', lr=0.001, batch_size=128)
+            device=device, lr=0.001, batch_size=128)
 
 generate_prediction(features, cat_features, train_final_df, test_final_df, target,
             BaseMLPRegressor, model_conf, epoches=100, feature_norm='', 
-            device='cuda:0', lr=0.001, batch_size=128)
+            device=device, lr=0.001, batch_size=128)
 
 print(res)
