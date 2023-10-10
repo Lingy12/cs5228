@@ -42,6 +42,7 @@ def run_nn_pipeline(output_name, k_fold_val, epoches, verbose=1):
     cat_features = ["flat_type", "flat_model", "region", "subzone", "planning_area", "town"]
     target = 'monthly_rent'
     if k_fold_val:
+        print('running k-fold')
         res = train_kfold(features, cat_features, train_df_cleaned_final, target, 10, 
                 BaseMLPRegressor, model_conf, epoches=epoches, feature_norm='', 
                 device=device, lr=0.001, batch_size=128)
