@@ -6,7 +6,7 @@ import torch
 from nn_utils import train_kfold, generate_prediction
 import fire
 
-def run_nn_pipeline(output_name)
+def run_nn_pipeline(output_name, k_fold_val, epoches, verbose=1):
     train_final = './data/train_with_mrt_mall_school.csv'
     test_final = './data/test_with_mrt_mall_school.csv'
     train_final_df = pd.read_csv(train_final)
@@ -21,8 +21,8 @@ def run_nn_pipeline(output_name)
 
     model_conf = {
             "output_size":1, 
-            "hidden_layers":2,
-            "hidden_unit": [50, 50],
+            "hidden_layers":1,
+            "hidden_unit": [100],
             "dropout": 0.0,
             "activation": nn.ReLU()
             }
@@ -41,13 +41,14 @@ def run_nn_pipeline(output_name)
                 "nearest_mall_dist", "near_mall_count", "near_mrt_count", "near_school_count", "nearest_school_dist", "date"]
     cat_features = ["flat_type", "flat_model", "region", "subzone", "planning_area", "town"]
     target = 'monthly_rent'
-    # res = train_kfold(features, cat_features, train_df_cleaned_final, target, 10, 
-    #             BaseMLPRegressor, model_conf, epoches=100, feature_norm='', 
-    #             device=device, lr=0.001, batch_size=128)
-
+    if k_fold_val:
+        res = train_kfold(features, cat_features, train_df_cleaned_final, target, 10, 
+                BaseMLPRegressor, model_conf, epoches=epoches, feature_norm='', 
+                device=device, lr=0.001, batch_size=54000)
+        print(res)
     out_df = generate_prediction(features, cat_features, train_final_df, test_final_df, target,
-                BaseMLPRegressor, model_conf, epoches=1000, feature_norm='', 
-                device=device, lr=0.001, batch_size=128)
+                BaseMLPRegressor, model_conf, epoches=epoches, feature_norm='', 
+                device=device, lr=0.001, batch_size=60000, verbose=verbose)
     # print(out_df)
     out_df.to_csv(output_name)
     # print(res)

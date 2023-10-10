@@ -44,7 +44,7 @@ def evaluate(model, X_test, y_test, batch_size, device):
     predictions = torch.cat(pred)
     return predictions
 
-def train(model, X_train, y_train, X_val, y_val, epochs, learning_rate, batch_size, device, criterion):
+def train(model, X_train, y_train, X_val, y_val, epochs, learning_rate, batch_size, device, criterion, verbose=1):
     model.train()
     model.to(device)
     # print(model.parameters())
@@ -61,12 +61,13 @@ def train(model, X_train, y_train, X_val, y_val, epochs, learning_rate, batch_si
             optimizer.step()
         train_pred = evaluate(model, X_train, y_train, batch_size, device)
         predictions = evaluate(model, X_val, y_val, batch_size, device)
-        print('[Epoch {}] train_mae = {}, val_mae = {}'.format(epoch, mean_absolute_error(train_pred.detach().cpu().numpy(), y_train), 
+        if verbose == 0:
+            print('[Epoch {}] train_mae = {}, val_mae = {}'.format(epoch, mean_absolute_error(train_pred.detach().cpu().numpy(), y_train), 
                                                                mean_absolute_error(predictions.detach().cpu().numpy(), y_val)))
     return model
 
 
-def train_kfold(features, cat_features, df, target, k, model_class, model_params, epoches, feature_norm, device, batch_size, lr):
+def train_kfold(features, cat_features, df, target, k, model_class, model_params, epoches, feature_norm, device, batch_size, lr, verbose=1):
   # if no normalize, then do not need to split features and cat_features
   df = df.copy()
   # print(df.head())
@@ -111,7 +112,7 @@ def train_kfold(features, cat_features, df, target, k, model_class, model_params
     X_test = scaler.transform(X_test) # standardize
     print(X_train.shape, y_train.shape)
     # model = make_pipeline(*pipelines)
-    model = train(model, X_train, y_train, X_test, y_test, epoches, lr, batch_size, device, torch.nn.MSELoss())
+    model = train(model, X_train, y_train, X_test, y_test, epoches, lr, batch_size, device, torch.nn.MSELoss(), verbose=verbose)
     y_pred = evaluate(model, X_test, y_test, batch_size, device)
     train_pred = evaluate(model, X_train, y_train, batch_size, device)
     train_mae = mean_absolute_error(y_train, train_pred.detach().cpu())
@@ -129,7 +130,7 @@ def train_kfold(features, cat_features, df, target, k, model_class, model_params
     print(f'{metric}: average = {arr.mean()}, std_dev = {arr.std()}')
   return output
 
-def generate_prediction(features, cat_features, train_df, test_df, target, model_class, model_params, epoches, feature_norm, device, batch_size, lr):
+def generate_prediction(features, cat_features, train_df, test_df, target, model_class, model_params, epoches, feature_norm, device, batch_size, lr, verbose=1):
   # if no normalize, then do not need to split features and cat_features
   train_df_cleaned = clean_data(train_df)
   test_df_cleaned = clean_data(test_df)
@@ -161,7 +162,7 @@ def generate_prediction(features, cat_features, train_df, test_df, target, model
   X = train_df[features].to_numpy()
   y = train_df[target].to_numpy()
   X = scaler.fit_transform(X)
-  model = train(model, X, y, X, y, epoches, lr, batch_size, device, torch.nn.MSELoss())
+  model = train(model, X, y, X, y, epoches, lr, batch_size, device, torch.nn.MSELoss(),verbose=verbose)
 
   
   X_test = test_df[features].to_numpy()
