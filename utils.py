@@ -11,6 +11,7 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.pipeline import make_pipeline, Pipeline
 from sklearn.model_selection import KFold
 from sklearn.decomposition import PCA
+from sklearn.metrics import r2_score
 from sklearn import svm
 
 def train_kfold(features, cat_features, df, target, k, feature_norm='', pipelines=[StandardScaler(), LinearRegression()]):
@@ -34,6 +35,7 @@ def train_kfold(features, cat_features, df, target, k, feature_norm='', pipeline
   features = features + cat_one_hot_cols
   # print(df.columns)
   metrics = {
+    "r2_train": [],
     "train_mae": [],
     "val_mape": [],
     "val_pcc": [],
@@ -55,12 +57,13 @@ def train_kfold(features, cat_features, df, target, k, feature_norm='', pipeline
     y_pred = model.predict(X_test)
     train_pred = model.predict(X_train)
     train_mae = mean_absolute_error(y_train, train_pred)
+    r2_train = r2_score(y_train, train_pred)
     val_mae, val_pcc = mean_absolute_error(y_test, y_pred), np.corrcoef(y_pred, y_test)[0][1]
     val_mape = mean_absolute_percentage_error(y_test, y_pred)
     
     for metric in metrics:
       metrics[metric].append(eval(metric))
-    print(f'fold: {i}: train_mse = {train_mae}, mae = {val_mae}, pcc = {val_pcc}, mape = {val_mape}')
+    print(f'fold: {i}: train_mse = {train_mae}, train_r2 = {r2_train}, mae = {val_mae}, pcc = {val_pcc}, mape = {val_mape}')
     
   print('Overall evaluation')
   for metric in metrics:
