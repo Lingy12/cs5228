@@ -62,11 +62,27 @@ def combined_encoding(train_df, test_df, cat_features, is_val=False):
     
 def generate_features(train_df, test_df):
     train_df, test_df = train_df.copy(), test_df.copy()
-    town_map, region_map = get_grouped_psqm(train_df, 'town').to_dict(), get_grouped_psqm(train_df, 'region').to_dict()
+    town_map, region_map, subzone_map = get_grouped_psqm(train_df, 'town').to_dict(), get_grouped_psqm(train_df, 'region').to_dict(), get_grouped_psqm(train_df, 'subzone').to_dict()
+    # town_map_25, region_map_25 = get_grouped_psqm(train_df, 'town', 0.25).to_dict(), get_grouped_psqm(train_df, 'region', 0.25).to_dict(), get_grouped_psqm(train_df, 'subzone').to_dict()
+    # town_map_75, region_map_75 = get_grouped_psqm(train_df, 'town', 0.75).to_dict(), get_grouped_psqm(train_df, 'region', 0.75).to_dict(), get_grouped_psqm(train_df, 'subzone').to_dict()
     train_df['town_psqm'] = train_df.apply(lambda x: town_map[x['town']][x['rent_approval_date']], axis=1)
     train_df['regional_psqm'] = train_df.apply(lambda x: region_map[x['region']][x['rent_approval_date']], axis=1)
+    # train_df['subzone_psqm'] = train_df.apply(lambda x: subzone_map[x['subzone']][x['rent_approval_date']], axis=1)
     test_df['town_psqm'] = test_df.apply(lambda x: town_map[x['town']][x['rent_approval_date']], axis=1)
     test_df['regional_psqm'] = test_df.apply(lambda x: region_map[x['region']][x['rent_approval_date']], axis=1)
+    # train_df['subzone_psqm'] = test_df.apply(lambda x: subzone_map[x['subzone']][x['rent_approval_date']], axis=1)
+    
+    # # 25 percentile
+    # train_df['town_psqm_25'] = train_df.apply(lambda x: town_map_25[x['town']][x['rent_approval_date']], axis=1)
+    # train_df['regional_psqm_25'] = train_df.apply(lambda x: region_map_25[x['region']][x['rent_approval_date']], axis=1)
+    # test_df['town_psqm_25'] = test_df.apply(lambda x: town_map_25[x['town']][x['rent_approval_date']], axis=1)
+    # test_df['regional_psqm_25'] = test_df.apply(lambda x: region_map_25[x['region']][x['rent_approval_date']], axis=1)
+    
+    # # 75 percentile
+    # train_df['town_psqm_75'] = train_df.apply(lambda x: town_map_75[x['town']][x['rent_approval_date']], axis=1)
+    # train_df['regional_psqm_75'] = train_df.apply(lambda x: region_map_75[x['region']][x['rent_approval_date']], axis=1)
+    # test_df['town_psqm_75'] = test_df.apply(lambda x: town_map_75[x['town']][x['rent_approval_date']], axis=1)
+    # test_df['regional_psqm_75'] = test_df.apply(lambda x: region_map_75[x['region']][x['rent_approval_date']], axis=1)
     return train_df, test_df
 
 def z_norm_col(column, df_z_scaled):
@@ -106,9 +122,12 @@ def cluster_rental_location(data, n_clusters):
     df['cluster'] = kmeans.labels_
     return df
 
-def get_grouped_psqm(df, target_attr):
+def get_grouped_psqm(df, target_attr, quantile=None): # is specify quantile then use quantile, other wise using mean
     df = df.copy()
-    trained_df_group_avg = df.groupby(['rent_approval_date', target_attr]).mean(numeric_only=True).reset_index()
+    if not quantile:
+        trained_df_group_avg = df.groupby(['rent_approval_date', target_attr]).mean(numeric_only=True).reset_index()
+    else:
+        trained_df_group_avg = df.groupby(['rent_approval_date', target_attr]).quantile(q=quantile, numeric_only=True).reset_index()
     pivot_df = trained_df_group_avg.pivot(index='rent_approval_date', columns=target_attr, values='psqm')
     
     # fill na with average
