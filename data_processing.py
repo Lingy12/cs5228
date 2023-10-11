@@ -40,6 +40,8 @@ def process_data(df, mode = 'train'):
     df['psqm'] = df['monthly_rent'] / df['floor_area_sqm']
   df['date'] = df['rent_approval_date'].map(lambda x: datetime.strptime(x, approval_date_f).timestamp())
   df['age'] = df.apply(lambda x: (datetime.strptime(x['rent_approval_date'], approval_date_f) - datetime.strptime(str(x['lease_commence_date']), commence_f)).days, axis=1)
+  df['age_year'] = df['age'] / 360
+  df['age_bin'] = bin_values(df['age_year'], step_size=5, right_bound=30, transformation_function=lambda x: 1.5*x)
   return df
 
 def combined_encoding(train_df, test_df, cat_features, is_val=False):
