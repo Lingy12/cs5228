@@ -40,4 +40,4 @@ train_kfold(['floor_area_sqm',
                         train_df_cleaned_final, 'monthly_rent', 10, 
                         pipelines=[StandardScaler(), 
                                    MLPRegressor(random_state=1, max_iter=1000, hidden_layer_sizes=(200,), 
-                                                learning_rate='adaptive', early_stopping=True)])
+                                                learning_rate='adaptive', early_stopping=True, learning_rate_init=0.01, alpha=0.001)])
