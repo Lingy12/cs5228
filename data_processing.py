@@ -118,3 +118,33 @@ def generate_perc(df, col, grouping, target):
     df = df.copy()
     df[col] = df.groupby(grouping)[target].rank(pct=True)
     return df
+
+def bin_values(series, step_size, right_bound=None, transformation_function=lambda x: x):
+
+    
+    # Infer min and max from the series
+    min_value = series.min()
+    if right_bound is None:
+        max_value = series.max()
+    else:
+        max_value = right_bound
+
+    # Create bins
+    bins = [min_value]
+    while bins[-1] < max_value:
+        next_step = transformation_function(step_size)
+        if bins[-1] + next_step >= max_value:
+            bins.append(max_value)
+        else:
+            bins.append(bins[-1] + next_step)
+        step_size = next_step
+
+    # Use pandas cut function to bin values
+    binned_series = pd.cut(series, bins=bins, include_lowest=True, right=False)
+
+    return binned_series
+
+
+
+
+
