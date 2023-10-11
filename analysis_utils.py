@@ -14,3 +14,4 @@ def get_r_2(df, x, y, transform = lambda x: x):
     r2 = 1 - (ss_res / ss_tot)
 
     return r2
+

@@ -113,3 +113,8 @@ def get_grouped_psqm(df, target_attr):
     for col in pivot_df.columns:
         pivot_df[col].fillna(float(pivot_df[col].mean()), inplace=True)
     return pivot_df
+
+def generate_perc(df, col, grouping, target):
+    df = df.copy()
+    df[col] = df.groupby(grouping)[target].rank(pct=True)
+    return df
