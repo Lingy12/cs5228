@@ -1,3 +1,5 @@
+import sys
+sys.path.append('..')
 from preprocessing.data_processing import clean_data, process_data
 import pandas as pd
 from torch import cat, nn

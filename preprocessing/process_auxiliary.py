@@ -1,3 +1,5 @@
+import sys
+sys.path.append('..')
 import pandas as pd
 from preprocessing.data_processing import *
 # from tqdm import tqdm
