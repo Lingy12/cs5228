@@ -1,6 +1,7 @@
 import sys
 sys.path.append('..')
-
+from datetime import datetime
+import os
 import pandas as pd
 from sklearn.linear_model import SGDRegressor, LinearRegression
 from sklearn.model_selection import train_test_split
@@ -108,3 +109,10 @@ def generate_prediction(features, cat_features, train_df, test_df, target, featu
   y = model.predict(X_test)
   out_df = pd.DataFrame(data=[(id, y[id]) for id in range(y.shape[0])], columns=['id', 'predicted']).set_index('id')
   return out_df
+
+def output_prediction(prediction_df):
+  if not os.path.exists('predictions'):
+    os.mkdir('predictions')
+  name = 'my_pred' + datetime.now().strftime('%Y%m%d%H%M')
+  out_path = os.path.join('predictions', name + '.csv')
+  prediction_df.to_csv(out_path)

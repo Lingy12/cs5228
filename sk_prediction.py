@@ -6,6 +6,8 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.neural_network import MLPRegressor
 from data_processing import *
 from utils import generate_prediction
+from utils import output_prediction
+from datetime import datetime
 
 
 DATA_DIR = './data'
@@ -34,4 +36,4 @@ features = ['floor_area_sqm',
                          'date']
 cat_features = ['flat_type', 'flat_model', 'region', 'subzone', 'planning_area', 'town']
 out_df = generate_prediction(features, cat_features, train_final_df, test_final_df, target, pipelines=[StandardScaler(), MLPRegressor(random_state=1, max_iter=1000)])
-out_df.to_csv('my_pred_mlp.csv')
+output_prediction(out_df)
