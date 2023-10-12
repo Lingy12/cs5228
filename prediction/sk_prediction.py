@@ -1,7 +1,7 @@
 import os, sys
 import sys
 sys.path.append('..')
-
+sys.path.append(os.getcwd())
 import pandas as pd
 from sklearn.linear_model import LinearRegression
 from sklearn.preprocessing import StandardScaler
@@ -12,7 +12,7 @@ from utils.utils import output_prediction
 from datetime import datetime
 
 
-DATA_DIR = '../data'
+DATA_DIR = './data'
 train_data = os.path.join(DATA_DIR, 'train.csv')
 test_data = os.path.join(DATA_DIR, 'test.csv')
 

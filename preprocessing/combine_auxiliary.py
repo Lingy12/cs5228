@@ -2,15 +2,16 @@ import pandas as pd
 from preprocessing.data_processing import haversine
 # import swifter
 from tqdm import tqdm
-import sys
+import sys, os
 sys.path.append('..')
+sys.path.append(os.getcwd())
 tqdm.pandas()
 
-existing_mrt_data = '../data/auxiliary-data/sg-mrt-existing-stations.csv'
-school_data = '../data/auxiliary-data/sg-primary-schools.csv'
-shopping_mall_data = '../data/auxiliary-data/sg-shopping-malls.csv'
-train_data = '../data/train.csv'
-test_data = '../data/test.csv'
+existing_mrt_data = './data/auxiliary-data/sg-mrt-existing-stations.csv'
+school_data = './data/auxiliary-data/sg-primary-schools.csv'
+shopping_mall_data = './data/auxiliary-data/sg-shopping-malls.csv'
+train_data = './data/train.csv'
+test_data = './data/test.csv'
 
 mrt_df = pd.read_csv(existing_mrt_data)
 school_df = pd.read_csv(school_data)
