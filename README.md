@@ -7,3 +7,5 @@
 - combine_auxiliary.py: Utility function to combine primary school, mrt and shopping mall information.
 
 Computation for nearest MRT, mall, school is expensive. Hence, we pre-generated the files for both training and testing data.
+
+Running script need to be triggered at top level, because relative path is used.
