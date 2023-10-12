@@ -69,7 +69,7 @@ def train(model, X_train, y_train, X_val, y_val, epochs, learning_rate, batch_si
     # print(model.parameters())
     optimizer = Adam(lr=learning_rate, params=model.parameters())
     train_loader = create_dataloader(X_train, y_train, batch_size)
-    early_stop = EarlyStopper(10, 0.001)
+    early_stop = EarlyStopper(3, 0.001)
     best_params = {}
     for epoch in range(epochs):
         for _, data in enumerate(train_loader):
