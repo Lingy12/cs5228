@@ -1,5 +1,6 @@
-import sys
+import sys, os
 sys.path.append('..')
+sys.path.append(os.getcwd())
 from sklearn.neural_network import MLPRegressor
 import pandas as pd
 import plotly

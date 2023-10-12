@@ -7,9 +7,10 @@ from torch import cat, nn
 from training.torch_models import BaseMLPRegressor
 import torch
 from utils.nn_utils import train_kfold, generate_prediction
+from utils.utils import output_prediction
 import fire
 
-def run_nn_pipeline(output_name, k_fold_val, epoches, verbose=1):
+def run_nn_pipeline(k_fold_val, epoches, verbose=1):
     train_final = './data/train_with_mrt_mall_school.csv'
     test_final = './data/test_with_mrt_mall_school.csv'
     train_final_df = pd.read_csv(train_final)
@@ -54,7 +55,8 @@ def run_nn_pipeline(output_name, k_fold_val, epoches, verbose=1):
                 BaseMLPRegressor, model_conf, epoches=epoches, feature_norm='', 
                 device=device, lr=0.001, batch_size=128, verbose=verbose)
     # print(out_df)
-    out_df.to_csv(output_name)
+    # out_df.to_csv(output_name)
+    output_prediction(out_df)
     # print(res)
 
 if __name__ == "__main__":
