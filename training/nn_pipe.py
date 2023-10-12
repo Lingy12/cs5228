@@ -26,7 +26,7 @@ def run_nn_pipeline(k_fold_val, epoches, verbose=1):
     model_conf = {
             "output_size":1, 
             "hidden_layers":1,
-            "hidden_unit": [100],
+            "hidden_unit": [200],
             "dropout": 0.0,
             "activation": nn.ReLU()
             }

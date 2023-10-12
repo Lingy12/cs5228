@@ -13,8 +13,27 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import KFold
 from torch.utils.data import Dataset, DataLoader
 from tqdm import tqdm
+from sklearn.model_selection import train_test_split
 from torch.optim import Adam
 from torchsummary import summary
+
+class EarlyStopper:
+    def __init__(self, patience=1, min_delta=0):
+        self.patience = patience
+        self.min_delta = min_delta
+        self.counter = 0
+        self.min_validation_loss = float('inf')
+
+    def early_stop(self, validation_loss):
+        if validation_loss < self.min_validation_loss:
+            self.min_validation_loss = validation_loss
+            self.counter = 0
+        elif validation_loss > (self.min_validation_loss + self.min_delta):
+            self.counter += 1
+            if self.counter >= self.patience:
+                return True
+        return False
+
 
 class MyDataset(Dataset):
     def __init__(self, X, y):
@@ -50,8 +69,9 @@ def train(model, X_train, y_train, X_val, y_val, epochs, learning_rate, batch_si
     # print(model.parameters())
     optimizer = Adam(lr=learning_rate, params=model.parameters())
     train_loader = create_dataloader(X_train, y_train, batch_size)
-
-    for epoch in tqdm(range(epochs)):
+    early_stop = EarlyStopper(10, 0.001)
+    best_params = {}
+    for epoch in range(epochs):
         for _, data in enumerate(train_loader):
             X, y = data[0].to(device).float(), data[1].to(device).float()
             optimizer.zero_grad()
@@ -61,9 +81,17 @@ def train(model, X_train, y_train, X_val, y_val, epochs, learning_rate, batch_si
             optimizer.step()
         train_pred = evaluate(model, X_train, y_train, batch_size, device)
         predictions = evaluate(model, X_val, y_val, batch_size, device)
+        val_mae = mean_absolute_error(predictions.detach().cpu().numpy(), y_val)
+        if val_mae < early_stop.min_validation_loss:
+          best_params = model.state_dict()
+          print('saved best')       
+        if early_stop.early_stop(val_mae):
+          break # early stopping
         if verbose == 0:
             print('[Epoch {}] train_mae = {}, val_mae = {}'.format(epoch, mean_absolute_error(train_pred.detach().cpu().numpy(), y_train), 
-                                                               mean_absolute_error(predictions.detach().cpu().numpy(), y_val)))
+                                                              val_mae))
+    model = model.load_state_dict(best_params)
+    print('best model loaded.')
     return model
 
 
@@ -158,11 +186,12 @@ def generate_prediction(features, cat_features, train_df, test_df, target, model
   features = features + cat_one_hot_cols
   model = model_class(input_size=len(features), **model_params)
   summary(model.to(device), (1, len(features)))
- 
+  
   X = train_df[features].to_numpy()
   y = train_df[target].to_numpy()
   X = scaler.fit_transform(X)
-  model = train(model, X, y, X, y, epoches, lr, batch_size, device, torch.nn.MSELoss(),verbose=verbose)
+  X_train, X_val, y_train, y_val = train_test_split(X, y, test_size=0.1, shuffle=True)
+  model = train(model, X_train, y_train, X_val, y_val, epoches, lr, batch_size, device, torch.nn.MSELoss(),verbose=verbose)
 
   
   X_test = test_df[features].to_numpy()
