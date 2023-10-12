@@ -13,7 +13,7 @@ import os
 import pandas as pd
 from preprocessing.data_processing import clean_data, process_data
 
-DATA_DIR = './data'
+DATA_DIR = '../data'
 train = os.path.join(DATA_DIR, 'train.csv')
 test = os.path.join(DATA_DIR, 'test.csv')
 

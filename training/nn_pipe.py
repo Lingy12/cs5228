@@ -7,8 +7,8 @@ from utils.nn_utils import train_kfold, generate_prediction
 import fire
 
 def run_nn_pipeline(output_name, k_fold_val, epoches, verbose=1):
-    train_final = './data/train_with_mrt_mall_school.csv'
-    test_final = './data/test_with_mrt_mall_school.csv'
+    train_final = '../data/train_with_mrt_mall_school.csv'
+    test_final = '../data/test_with_mrt_mall_school.csv'
     train_final_df = pd.read_csv(train_final)
     test_final_df = pd.read_csv(test_final)
     train_df_cleaned_final = clean_data(train_final_df)

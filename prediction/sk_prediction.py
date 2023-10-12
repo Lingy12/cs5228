@@ -1,4 +1,6 @@
 import os, sys
+import sys
+sys.append('..')
 
 import pandas as pd
 from sklearn.linear_model import LinearRegression
