@@ -71,7 +71,7 @@ def train(model, X_train, y_train, X_val, y_val, epochs, learning_rate, batch_si
     train_loader = create_dataloader(X_train, y_train, batch_size)
     early_stop = EarlyStopper(3, 0.001)
     best_params = {}
-    for epoch in range(epochs):
+    for epoch in tqdm(range(epochs)):
         for _, data in enumerate(train_loader):
             X, y = data[0].to(device).float(), data[1].to(device).float()
             optimizer.zero_grad()
@@ -84,7 +84,8 @@ def train(model, X_train, y_train, X_val, y_val, epochs, learning_rate, batch_si
         val_mae = mean_absolute_error(predictions.detach().cpu().numpy(), y_val)
         if val_mae < early_stop.min_validation_loss:
           best_params = model.state_dict()
-          print('saved best')       
+          if verbose == 0:
+            print('saved best')       
         if early_stop.early_stop(val_mae):
           break # early stopping
         if verbose == 0:

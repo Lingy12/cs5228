@@ -21,7 +21,7 @@ school_df = pd.read_csv(school_data)
 shopping_mall_df = pd.read_csv(shopping_mall_data)
 coe_df = pd.read_csv(coe_data)
 
-mrt_radius = [0.3, 0.8, 1.5, 2] # from analysis
+mrt_radius = [0.3, 0.8, 1.0, 1.5, 2] # from analysis
 mall_radius = [0.5, 1.0, 1.5, 2]
 school_radius = [0.5, 1.0, 1.5, 2]
 train_df = pd.read_csv(train_data)

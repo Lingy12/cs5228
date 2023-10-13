@@ -4,15 +4,19 @@ sys.path.append(os.getcwd())
 from preprocessing.data_processing import clean_data, process_data
 import pandas as pd
 from torch import cat, nn
-from training.torch_models import BaseMLPRegressor
+from training import torch_models
 import torch
 from utils.nn_utils import train_kfold, generate_prediction
 from utils.utils import output_prediction
+from config import sk_config, model_conf
 import fire
 
-def run_nn_pipeline(k_fold_val, epoches, verbose=1):
-    train_final = './data/train_with_mrt_mall_school.csv'
-    test_final = './data/test_with_mrt_mall_school.csv'
+def run_nn_pipeline(k_fold_val, epoches, conf_name, model_conf_name, model_class_name, lr, batch_size, verbose=1):
+    print('running conf ' + conf_name)
+    conf = getattr(sk_config, conf_name)
+    print(conf)
+    train_final = './data/train_final.csv'
+    test_final = './data/test_final.csv'
     train_final_df = pd.read_csv(train_final)
     test_final_df = pd.read_csv(test_final)
     train_df_cleaned_final = clean_data(train_final_df)
@@ -23,37 +27,23 @@ def run_nn_pipeline(k_fold_val, epoches, verbose=1):
     print('cuda available = ' + str(torch.cuda.is_available()))
     device = 'cuda:0' if torch.cuda.is_available() else 'cpu'
 
-    model_conf = {
-            "output_size":1, 
-            "hidden_layers":1,
-            "hidden_unit": [200],
-            "dropout": 0.0,
-            "activation": nn.ReLU()
-            }
-
-    # best
-    # model_conf = {
-    #         "output_size":1, 
-    #         "hidden_layers":1,
-    #         "hidden_unit": [100],
-    #         "dropout": 0.0,
-    #         "activation": nn.ReLU()
-    #         }
+    model_class = getattr(torch_models, model_class_name)
+    model_config = getattr(model_conf, model_conf_name)
+    print(model_config)
 
 
-    features = ["floor_area_sqm", "age", "town_psqm", "regional_psqm", "nearest_mrt_dist",
-                "nearest_mall_dist", "near_mall_count", "near_mrt_count", "near_school_count", "nearest_school_dist", "date"]
-    cat_features = ["flat_type", "flat_model", "region", "subzone", "planning_area", "town"]
+    features = conf['features']
+    cat_features = conf['cat_features']
     target = 'monthly_rent'
     if k_fold_val:
         print('running k-fold')
         res = train_kfold(features, cat_features, train_df_cleaned_final, target, 10, 
-                BaseMLPRegressor, model_conf, epoches=epoches, feature_norm='', 
-                device=device, lr=0.001, batch_size=128)
+                model_class, model_config, epoches=epoches, feature_norm='', 
+                device=device, lr=lr, batch_size=batch_size)
         print(res)
     out_df = generate_prediction(features, cat_features, train_final_df, test_final_df, target,
-                BaseMLPRegressor, model_conf, epoches=epoches, feature_norm='', 
-                device=device, lr=0.001, batch_size=128, verbose=verbose)
+                model_class, model_config, epoches=epoches, feature_norm='', 
+                device=device, lr=lr, batch_size=batch_size, verbose=verbose)
     # print(out_df)
     # out_df.to_csv(output_name)
     output_prediction(out_df)

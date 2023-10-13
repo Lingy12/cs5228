@@ -99,6 +99,6 @@ def produce_coe_features(df, coe_df):
     result = result.drop(columns = ['category','year','quota','bids'])
     result = result.groupby('rent_approval_date')['price'].mean().reset_index()
     # print(result['rent_approval_date'][12])
-    result_merged = pd.merge(df, result, on='rent_approval_date', how='inner')
-    result_merged = result_merged.sample(frac=1, random_state=42).reset_index(drop=True)
+    result_merged = pd.merge(df, result, on='rent_approval_date', how='left')
+    # result_merged = result_merged.sample(frac=1, random_state=42).reset_index(drop=True)
     return result_merged
