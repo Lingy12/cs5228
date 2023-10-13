@@ -95,10 +95,10 @@ def produce_coe_features(df, coe_df):
 
     coe_df['rent_approval_date'] = coe_df['year'].str.cat(coe_df['month'], sep='-')
     # print(df['rent_approval_date'])
-
     result = coe_df.groupby(['year', 'category', 'rent_approval_date']).agg({'price': 'mean', 'quota': 'mean', 'bids': 'mean'}).reset_index()
     result = result.drop(columns = ['category','year','quota','bids'])
     result = result.groupby('rent_approval_date')['price'].mean().reset_index()
     # print(result['rent_approval_date'][12])
     result_merged = pd.merge(df, result, on='rent_approval_date', how='inner')
+    result_merged = result_merged.sample(frac=1, random_state=42).reset_index(drop=True)
     return result_merged
