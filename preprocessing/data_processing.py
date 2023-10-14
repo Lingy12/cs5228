@@ -1,11 +1,12 @@
 from datetime import datetime
 import pandas as pd
-from sklearnex import patch_sklearn
+# from sklearnex import patch_sklearn
 import sys
 import os
+from utils.distances import count_close_locations
 sys.path.append('..')
 sys.path.append(os.getcwd())
-patch_sklearn()
+# patch_sklearn()
 from sklearn.cluster import KMeans
 from sklearn.preprocessing import LabelEncoder, OneHotEncoder
 import math
@@ -87,6 +88,12 @@ def generate_features(train_df, test_df):
     # train_df['regional_psqm_75'] = train_df.apply(lambda x: region_map_75[x['region']][x['rent_approval_date']], axis=1)
     # test_df['town_psqm_75'] = test_df.apply(lambda x: town_map_75[x['town']][x['rent_approval_date']], axis=1)
     # test_df['regional_psqm_75'] = test_df.apply(lambda x: region_map_75[x['region']][x['rent_approval_date']], axis=1)
+
+    # number of close primary schools
+    # primary_schools = pd.read_csv("./data/auxiliary-data/sg-primary-schools.csv")
+    # train_df["num_primary_school"] = train_df.apply(lambda x: count_close_locations(primary_schools, 1500, x['latitude'], x['longitude']), axis=1)
+    # test_df["num_primary_school"] = test_df.apply(
+    #     lambda x: count_close_locations(primary_schools, 1500, x['latitude'], x['longitude']), axis=1)
     return train_df, test_df
 
 def z_norm_col(column, df_z_scaled):

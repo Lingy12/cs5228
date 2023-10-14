@@ -13,7 +13,8 @@ base_conf = {
                          'nearest_mall_dist',
                          'nearest_school_dist',
                          'date',
-                         'price'
+                         'price',
+                         'num_primary_school',
                          ],
     "cat_features": ['flat_type', 'flat_model', 'region', 'subzone', 'planning_area', 'town'],
     "target": 'monthly_rent',
