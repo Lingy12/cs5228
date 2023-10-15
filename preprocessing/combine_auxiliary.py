@@ -105,6 +105,8 @@ def produce_coe_features(df, coe_df):
 
 '''
 Handle stock features data
+left table rent house data, right table stock data, they join by month(yyyy-mm)
+reutrn stock_price 
 '''
 def produce_stock_features(df, stock_df):
     df, stock_df = df.copy(), stock_df.copy()
@@ -113,11 +115,11 @@ def produce_stock_features(df, stock_df):
     stock_df['rent_approval_date'] = stock_df['rent_approval_date'].astype(str)
     # print(stock_df['rent_approval_date'])
     # Rename adjusted_close to price
-    stock_df.rename(columns={"adjusted_close": "price"}, inplace=True)
+    stock_df.rename(columns={"adjusted_close": "stock_price"}, inplace=True)
     # Group price by month (yyyy-mm)
-    result = stock_df.groupby(['date', 'symbol', 'rent_approval_date']).agg({'price': 'mean'}).reset_index()
+    result = stock_df.groupby(['date', 'symbol', 'rent_approval_date']).agg({'stock_price': 'mean'}).reset_index()
     result = result.drop(columns = ['symbol','date'])
-    result = result.groupby('rent_approval_date')['price'].mean().reset_index()
+    result = result.groupby('rent_approval_date')['stock_price'].mean().reset_index()
     # print(result)
     result_merged = pd.merge(df, result, on='rent_approval_date', how='left')
     return result_merged
