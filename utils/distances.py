@@ -35,22 +35,22 @@ def average_price_in_range(df, threshold, lat, lon):
     avg = (df["monthly_rent"] / df["floor_area_sqm"]).mean()
     return avg
 
-d = pandas.read_csv("../data/train.csv")
-dist = 2000
-primary_school = pandas.read_csv("../data/auxiliary-data/sg-primary-schools.csv")
-primary_school["avg_price"] = primary_school.apply(lambda x: average_price_in_range(d, dist, x["latitude"], x["longitude"]), axis=1)
-primary_school.to_csv(f"../data/primary_school_with_{dist/1000}_avg_rent.csv")
-
-existing_mrt = pandas.read_csv("../data/auxiliary-data/sg-mrt-existing-stations.csv")
-existing_mrt["avg_price"] = existing_mrt.apply(lambda x: average_price_in_range(d, dist, x["latitude"], x["longitude"]), axis=1)
-existing_mrt.to_csv(f"../data/existing_mrt_with_{dist/1000}_avg_rent.csv")
-
-planning_mrt = pandas.read_csv("../data/auxiliary-data/sg-mrt-planned-stations.csv")
-planning_mrt["avg_price"] = planning_mrt.apply(lambda x: average_price_in_range(d, dist, x["latitude"], x["longitude"]), axis=1)
-planning_mrt.to_csv(f"../data/planning_mrt_with_{dist/1000}_avg_rent.csv")
-
-shopping_malls = pandas.read_csv("../data/auxiliary-data/sg-shopping-malls.csv")
-shopping_malls["avg_price"] = shopping_malls.apply(lambda x: average_price_in_range(d, dist, x["latitude"], x["longitude"]), axis=1)
-shopping_malls.to_csv(f"../data/shopping_malls_with_{dist/1000}_avg_rent.csv")
+# d = pandas.read_csv("../data/train.csv")
+# dist = 2000
+# primary_school = pandas.read_csv("../data/auxiliary-data/sg-primary-schools.csv")
+# primary_school["avg_price"] = primary_school.apply(lambda x: average_price_in_range(d, dist, x["latitude"], x["longitude"]), axis=1)
+# primary_school.to_csv(f"../data/primary_school_with_{dist/1000}_avg_rent.csv")
+#
+# existing_mrt = pandas.read_csv("../data/auxiliary-data/sg-mrt-existing-stations.csv")
+# existing_mrt["avg_price"] = existing_mrt.apply(lambda x: average_price_in_range(d, dist, x["latitude"], x["longitude"]), axis=1)
+# existing_mrt.to_csv(f"../data/existing_mrt_with_{dist/1000}_avg_rent.csv")
+#
+# planning_mrt = pandas.read_csv("../data/auxiliary-data/sg-mrt-planned-stations.csv")
+# planning_mrt["avg_price"] = planning_mrt.apply(lambda x: average_price_in_range(d, dist, x["latitude"], x["longitude"]), axis=1)
+# planning_mrt.to_csv(f"../data/planning_mrt_with_{dist/1000}_avg_rent.csv")
+#
+# shopping_malls = pandas.read_csv("../data/auxiliary-data/sg-shopping-malls.csv")
+# shopping_malls["avg_price"] = shopping_malls.apply(lambda x: average_price_in_range(d, dist, x["latitude"], x["longitude"]), axis=1)
+# shopping_malls.to_csv(f"../data/shopping_malls_with_{dist/1000}_avg_rent.csv")
 
 

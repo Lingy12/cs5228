@@ -5,7 +5,8 @@ sys.path.append(os.getcwd())
 import pandas as pd
 from preprocessing.data_processing import *
 # from tqdm import tqdm
-from preprocessing.combine_auxiliary import produce_mall_features, produce_mrt_features, produce_school_features, produce_coe_features
+from preprocessing.combine_auxiliary import produce_mall_features, produce_mrt_features, produce_school_features, \
+    produce_coe_features, avg_rent_around_primary_schools, avg_rent_around_malls, avg_rent_around_existing_mrt
 
 # tqdm.pandas()
 
@@ -85,3 +86,16 @@ else:
 
 train_df.to_csv('./data/train_final.csv')
 test_df.to_csv('./data/test_final.csv')
+
+
+# avg rent price around auxiliaries
+thresholds = [1000, 1500, 2000]
+train_df = avg_rent_around_primary_schools(train_df, thresholds)
+train_df = avg_rent_around_existing_mrt(train_df, thresholds)
+train_df = avg_rent_around_malls(train_df, thresholds)
+test_df = avg_rent_around_malls(test_df, thresholds)
+test_df = avg_rent_around_primary_schools(test_df, thresholds)
+test_df = avg_rent_around_existing_mrt(test_df, thresholds)
+
+train_df.to_csv("./data/train_final_v1.csv")
+test_df.to_csv('./data/test_final_v1.csv')

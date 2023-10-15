@@ -3,6 +3,7 @@ from preprocessing.data_processing import haversine
 # import swifter
 from tqdm import tqdm
 import sys, os
+import utils.distances
 sys.path.append('..')
 sys.path.append(os.getcwd())
 tqdm.pandas()
@@ -102,3 +103,30 @@ def produce_coe_features(df, coe_df):
     result_merged = pd.merge(df, result, on='rent_approval_date', how='left')
     # result_merged = result_merged.sample(frac=1, random_state=42).reset_index(drop=True)
     return result_merged
+
+
+def avg_rent_around_primary_schools(df, thresholds):
+    for threshold in thresholds:
+        primary_school = pd.read_csv(f"./data/primary_school_with_{threshold/1000}_avg_rent.csv").drop_duplicates(subset="name")
+        primary_school_mapping = primary_school.set_index("name")["avg_price"]
+        df[f"avg_rent_around_primary_school_in_{threshold/1000}"] = df["nearest_school_name"].map(primary_school_mapping)
+
+    return df
+
+
+def avg_rent_around_malls(df, thresholds):
+    for threshold in thresholds:
+        malls = pd.read_csv(f"./data/shopping_malls_with_{threshold/1000}_avg_rent.csv").drop_duplicates(subset="name")
+        malls_mapping = malls.set_index("name")["avg_price"]
+        df[f"avg_rent_around_shopping_mall_in{threshold/1000}"] = df["nearest_mall_name"].map(malls_mapping)
+
+    return df
+
+
+def avg_rent_around_existing_mrt(df, thresholds):
+    for threshold in thresholds:
+        existing_mrt = pd.read_csv(f"./data/existing_mrt_with_{threshold/1000}_avg_rent.csv").drop_duplicates(subset="name")
+        existing_mrt_mapping = existing_mrt.set_index("name")["avg_price"]
+        df[f"avg_rent_around_existing_mrt_in{threshold / 1000}"] = df["nearest_mrt_name"].map(existing_mrt_mapping)
+
+    return df
