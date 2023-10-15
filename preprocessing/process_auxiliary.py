@@ -83,5 +83,22 @@ else:
     train_df, test_df = pd.read_csv('./data/train_with_mrt_mall_school_coe.csv'), pd.read_csv('./data/test_with_mrt_mall_school_coe.csv')
     print('coe feature exists and loaded')
 
+'''
+Handle stock feature
+'''
+print('generating stock feature')
+if not os.path.exists('./data/train_with_mrt_mall_school_stock.csv'):
+    if 'list_id' in train_df:
+        train_df = train_df.drop(columns=['list_id'])
+        test_df = test_df.drop(columns=['list_id'])
+
+    train_df = produce_stock_features(train_df, coe_df)
+    train_df.to_csv('./data/train_with_mrt_mall_school_stock.csv')
+    test_df = produce_stock_features(test_df, coe_df)
+    test_df.to_csv('./data/test_with_mrt_mall_school_stock.csv')
+else:
+    train_df, test_df = pd.read_csv('./data/train_with_mrt_mall_school_stock.csv'), pd.read_csv('./data/test_with_mrt_mall_school_stock.csv')
+    print('stock feature exists and loaded')
+
 train_df.to_csv('./data/train_final.csv')
 test_df.to_csv('./data/test_final.csv')
