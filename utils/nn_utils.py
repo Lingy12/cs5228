@@ -15,7 +15,9 @@ from torch.utils.data import Dataset, DataLoader
 from tqdm import tqdm
 from sklearn.model_selection import train_test_split
 from torch.optim import Adam
+from sklearn.pipeline import make_pipeline
 from torchsummary import summary
+from utils.utils import transform_features
 
 class EarlyStopper:
     def __init__(self, patience=1, min_delta=0):
@@ -91,12 +93,12 @@ def train(model, X_train, y_train, X_val, y_val, epochs, learning_rate, batch_si
         if verbose == 0:
             print('[Epoch {}] train_mae = {}, val_mae = {}'.format(epoch, mean_absolute_error(train_pred.detach().cpu().numpy(), y_train), 
                                                               val_mae))
-    model = model.load_state_dict(best_params)
+    model.load_state_dict(best_params)
     print('best model loaded.')
     return model
 
 
-def train_kfold(features, cat_features, df, target, k, model_class, model_params, epoches, feature_norm, device, batch_size, lr, verbose=1):
+def train_kfold(features, ord_features, norm_features, pipelines, df, target, k, model_class, model_params, epoches, feature_norm, device, batch_size, lr, verbose=1):
   # if no normalize, then do not need to split features and cat_features
   df = df.copy()
   # print(df.head())
@@ -104,9 +106,10 @@ def train_kfold(features, cat_features, df, target, k, model_class, model_params
   # model = make_pipeline(*pipelines)
   # model = BaseMLPRegressor()
   
-#   print(model)
-  scaler = StandardScaler()
+  num_processor, ord_cat_processor, norm_cat_processor = make_pipeline(*pipelines['num_processor']), \
+                                          make_pipeline(*pipelines['ord_cat_processor']), make_pipeline(*pipelines['norm_cat_processor'])
   cat_one_hot_cols = []
+  cat_features = ord_features + norm_features
   for cat_feat in cat_features:
     for value in df[cat_feat].unique():
       cat_one_hot_cols.append(cat_feat + '_' + value)
@@ -115,7 +118,7 @@ def train_kfold(features, cat_features, df, target, k, model_class, model_params
   if len(feature_norm) != 0:
     features = list(map(lambda x: x + '_' + feature_norm, features))
     
-  features = features + cat_one_hot_cols
+  # features = features + cat_one_hot_cols
   model = model_class(input_size=len(features), **model_params)
   summary(model.to(device), (1, len(features)) )
   # model = BaseMLPRegressor(input_size=len(features), output_size=1, hidden_layers=1, hidden_unit=[100], dropout=0.0)
@@ -126,9 +129,7 @@ def train_kfold(features, cat_features, df, target, k, model_class, model_params
     "val_pcc": [],
     "val_mae": []
   }
-  
   for i, (train_index, val_index) in enumerate(kf.split(df)):
-    model = model_class(input_size=len(features), **model_params)
     train_df, val_df = df.iloc[train_index].reset_index(drop=True), df.iloc[val_index].reset_index(drop=True)
     train_df, val_df = generate_features(train_df, val_df)
     
@@ -136,10 +137,12 @@ def train_kfold(features, cat_features, df, target, k, model_class, model_params
         joined_df = combined_encoding(train_df, val_df, cat_features=cat_features, is_val=True)
         train_df, val_df = joined_df[joined_df['split'] == 'train'].reset_index(drop=True), joined_df[joined_df['split'] == 'test'].reset_index(drop=True)
     # print(val_df.columns)
-    X_train, X_test, y_train, y_test = train_df[features].to_numpy(), val_df[features].to_numpy(), train_df[target].to_numpy(), val_df[target].to_numpy()
-    X_train = scaler.fit_transform(X_train) 
-    X_test = scaler.transform(X_test) # standardize
-    print(X_train.shape, y_train.shape)
+    y_train, y_test = train_df[target].to_numpy(), val_df[target].to_numpy()
+    # X_train = scaler.fit_transform(X_train) 
+    # X_test = scaler.transform(X_test) # standardize
+    X_train, X_test = transform_features(train_df, val_df, features, ord_features, norm_features, num_processor, ord_cat_processor, norm_cat_processor)
+    model = model_class(input_size=X_train.shape[1], **model_params)
+    # print(X_train.shape, y_train.shape)
     # model = make_pipeline(*pipelines)
     model = train(model, X_train, y_train, X_test, y_test, epoches, lr, batch_size, device, torch.nn.MSELoss(), verbose=verbose)
     y_pred = evaluate(model, X_test, y_test, batch_size, device)
@@ -159,18 +162,22 @@ def train_kfold(features, cat_features, df, target, k, model_class, model_params
     print(f'{metric}: average = {arr.mean()}, std_dev = {arr.std()}')
   return output
 
-def generate_prediction(features, cat_features, train_df, test_df, target, model_class, model_params, epoches, feature_norm, device, batch_size, lr, verbose=1):
+def generate_prediction(features, ord_features, norm_features, pipelines, train_df, test_df, target, model_class, model_params, epoches, feature_norm, device, batch_size, lr, verbose=1):
+  
+  num_processor, ord_cat_processor, norm_cat_processor = make_pipeline(*pipelines['num_processor']), \
+                                          make_pipeline(*pipelines['ord_cat_processor']), make_pipeline(*pipelines['norm_cat_processor'])
   # if no normalize, then do not need to split features and cat_features
   train_df_cleaned = clean_data(train_df)
   test_df_cleaned = clean_data(test_df)
   processed_train = process_data(train_df_cleaned)
   processed_test = process_data(test_df_cleaned, mode='test')
-  # model = make_pipeline(*pipelines)
-  # print(model)
-#   print(model)
-  scaler = StandardScaler()
+  
+  num_processor, ord_cat_processor, norm_cat_processor = make_pipeline(*pipelines['num_processor']), \
+                                          make_pipeline(*pipelines['ord_cat_processor']), make_pipeline(*pipelines['norm_cat_processor'])
+  
   train_df, test_df = generate_features(processed_train, processed_test)
-  print(len(train_df), len(test_df))  
+  # print(len(train_df), len(test_df))  
+  cat_features = ord_features + norm_features
   if len(cat_features) != 0:
     joined_df = combined_encoding(train_df, test_df, cat_features=cat_features)
     train_df, test_df = joined_df[joined_df['split'] == 'train'].reset_index(drop=True), joined_df[joined_df['split'] == 'test'].reset_index(drop=True)
@@ -184,19 +191,19 @@ def generate_prediction(features, cat_features, train_df, test_df, target, model
   if len(feature_norm) != 0:
     features = list(map(lambda x: x + '_' + feature_norm, features))
     
-  features = features + cat_one_hot_cols
-  model = model_class(input_size=len(features), **model_params)
-  summary(model.to(device), (1, len(features)))
-  
-  X = train_df[features].to_numpy()
-  y = train_df[target].to_numpy()
-  X = scaler.fit_transform(X)
-  X_train, X_val, y_train, y_val = train_test_split(X, y, test_size=0.1, shuffle=True)
+  # features = features + cat_one_hot_cols
+  # model = model_class(input_size=len(features), **model_params)
+  train_df_new, val_df = train_test_split(train_df.copy(), test_size=0.01, shuffle=True)
+  X_train, X_val = transform_features(train_df_new, val_df, features, ord_features, norm_features, num_processor, ord_cat_processor, norm_cat_processor)
+  y_train, y_val = train_df_new[target].to_numpy(), val_df[target].to_numpy()
+  print(X_train.shape, X_val.shape)
+  model = model_class(input_size=X_train.shape[1], **model_params)
+  summary(model.to(device), (1, X_train.shape[1]))
+  # X_train, X_val, y_train, y_val = train_test_split(X, y, test_size=0.1, shuffle=True)
   model = train(model, X_train, y_train, X_val, y_val, epoches, lr, batch_size, device, torch.nn.MSELoss(),verbose=verbose)
 
-  
-  X_test = test_df[features].to_numpy()
-  X_test = scaler.transform(X_test)
+  X_train, X_test = transform_features(train_df, test_df, features, ord_features, norm_features, num_processor, ord_cat_processor, norm_cat_processor)
+
   y_test = np.zeros(len(X_test))
   y = evaluate(model, X_test, y_test, batch_size, device).detach().cpu().numpy()
   out_df = pd.DataFrame(data=[(id, y[id][0]) for id in range(y.shape[0])], columns=['id', 'predicted']).set_index('id')

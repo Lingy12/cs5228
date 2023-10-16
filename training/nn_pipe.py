@@ -33,15 +33,18 @@ def run_nn_pipeline(k_fold_val, epoches, conf_name, model_conf_name, model_class
 
 
     features = conf['features']
-    cat_features = conf['cat_features']
+    norm_features = conf['norm_features']
+    ord_features = conf['ord_features']
+    pipelines = conf['pipelines']
+
     target = 'monthly_rent'
     if k_fold_val:
         print('running k-fold')
-        res = train_kfold(features, cat_features, train_df_cleaned_final, target, 10, 
+        res = train_kfold(features, ord_features, norm_features, pipelines, train_df_cleaned_final, target, 10, 
                 model_class, model_config, epoches=epoches, feature_norm='', 
                 device=device, lr=lr, batch_size=batch_size)
         print(res)
-    out_df = generate_prediction(features, cat_features, train_final_df, test_final_df, target,
+    out_df = generate_prediction(features, ord_features, norm_features, pipelines, train_final_df, test_final_df, target,
                 model_class, model_config, epoches=epoches, feature_norm='', 
                 device=device, lr=lr, batch_size=batch_size, verbose=verbose)
     # print(out_df)

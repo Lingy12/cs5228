@@ -67,14 +67,17 @@ def combined_encoding(train_df, test_df, cat_features, is_val=False):
 def generate_features(train_df, test_df):
     train_df, test_df = train_df.copy(), test_df.copy()
     town_map, region_map, subzone_map = get_grouped_psqm(train_df, 'town').to_dict(), get_grouped_psqm(train_df, 'region').to_dict(), get_grouped_psqm(train_df, 'subzone').to_dict()
+    # planning_area_map = get_grouped_psqm(train_df, 'planning_area')
     # town_map_25, region_map_25 = get_grouped_psqm(train_df, 'town', 0.25).to_dict(), get_grouped_psqm(train_df, 'region', 0.25).to_dict(), get_grouped_psqm(train_df, 'subzone').to_dict()
     # town_map_75, region_map_75 = get_grouped_psqm(train_df, 'town', 0.75).to_dict(), get_grouped_psqm(train_df, 'region', 0.75).to_dict(), get_grouped_psqm(train_df, 'subzone').to_dict()
     train_df['town_psqm'] = train_df.apply(lambda x: town_map[x['town']][x['rent_approval_date']], axis=1)
     train_df['regional_psqm'] = train_df.apply(lambda x: region_map[x['region']][x['rent_approval_date']], axis=1)
-    # train_df['subzone_psqm'] = train_df.apply(lambda x: subzone_map[x['subzone']][x['rent_approval_date']], axis=1)
+    train_df['subzone_psqm'] = train_df.apply(lambda x: subzone_map[x['subzone']][x['rent_approval_date']], axis=1)
+    # train_df['planning_area_psqm'] = train_df.apply(lambda x: subzone_map[x['planning_area']][x['rent_approval_date']], axis=1)
     test_df['town_psqm'] = test_df.apply(lambda x: town_map[x['town']][x['rent_approval_date']], axis=1)
     test_df['regional_psqm'] = test_df.apply(lambda x: region_map[x['region']][x['rent_approval_date']], axis=1)
-    # train_df['subzone_psqm'] = test_df.apply(lambda x: subzone_map[x['subzone']][x['rent_approval_date']], axis=1)
+    test_df['subzone_psqm'] = test_df.apply(lambda x: subzone_map[x['subzone']][x['rent_approval_date']], axis=1)
+    # test_df['planning_area_psqm'] = test_df.apply(lambda x: subzone_map[x['planning_area']][x['rent_approval_date']], axis=1)
     
     # # 25 percentile
     # train_df['town_psqm_25'] = train_df.apply(lambda x: town_map_25[x['town']][x['rent_approval_date']], axis=1)

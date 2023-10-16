@@ -27,7 +27,7 @@ def run(conf_name):
   train_df_cleaned_final = process_data(train_df_cleaned_final)
 
 
-  train_kfold(conf['features'], conf['cat_features'],
+  train_kfold(conf['features'], conf['ord_features'],conf['norm_features'],
                           train_df_cleaned_final, conf['target'], 10, 
                           pipelines=conf['pipelines'])
 

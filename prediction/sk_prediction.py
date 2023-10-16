@@ -26,8 +26,9 @@ def run(conf_name):
     # train_df
 
     features = conf['features']
-    cat_features = conf['cat_features']
-    out_df = generate_prediction(features, cat_features, train_final_df, test_final_df, 
+    norm_features = conf['norm_features']
+    ord_features = conf['ord_features']
+    out_df = generate_prediction(features, ord_features, norm_features, train_final_df, test_final_df, 
                                 target, pipelines=conf['pipelines'])
     output_prediction(out_df)
     
