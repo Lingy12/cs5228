@@ -91,7 +91,7 @@ def train(model, X_train, y_train, X_val, y_val, epochs, learning_rate, batch_si
         if verbose == 0:
             print('[Epoch {}] train_mae = {}, val_mae = {}'.format(epoch, mean_absolute_error(train_pred.detach().cpu().numpy(), y_train), 
                                                               val_mae))
-    model = model.load_state_dict(best_params)
+    model.load_state_dict(best_params)
     print('best model loaded.')
     return model
 
