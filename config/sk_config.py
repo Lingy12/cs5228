@@ -21,7 +21,7 @@ base_mlp_conf = {
     "target": 'monthly_rent',
     "pipelines": {'num_processor': [StandardScaler()], 
                     'ord_cat_processor': [OneHotEncoder(sparse_output=False)], 
-                    'norm_cat_processor': [OneHotEncoder(sparse_output=False)], # ensure the concatenation 
+                    'norm_cat_processor': [OneHotEncoder(sparse_output=False), PCA(n_components='mle')], # ensure the concatenation 
                     'model': [MLPRegressor(random_state=1, max_iter=1000, hidden_layer_sizes=(200,), 
                                                 learning_rate='adaptive', early_stopping=True, validation_fraction=0.01)]}
 }
