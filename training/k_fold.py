@@ -25,11 +25,14 @@ def run(conf_name):
 
   train_df_cleaned_final = clean_data(train_final_df)
   train_df_cleaned_final = process_data(train_df_cleaned_final)
-
+  if 'feature_norm' not in conf:
+    feature_norm = ''
+  else:
+    feature_norm = feature_norm
 
   train_kfold(conf['features'], conf['cat_features'],
                           train_df_cleaned_final, conf['target'], 10, 
-                          pipelines=conf['pipelines'])
+                          pipelines=conf['pipelines'], feature_norm=feature_norm)
 
 if __name__ == '__main__':
   fire.Fire(run)
