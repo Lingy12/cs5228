@@ -62,9 +62,7 @@ def combined_encoding(train_df, test_df, num_features, cat_features, is_val=Fals
     for col in norm_columns:
         df[col + '_z_norm'] = z_norm_col(col, df)
         df[col + '_min_max_norm'] = min_max_col(col, df)
-    print(df[list(map(lambda x: x + '_min_max_norm', norm_columns))].isnull())
-    exit()
-    # print(len(df))
+  
     return df
     
 def generate_features(train_df, test_df):
