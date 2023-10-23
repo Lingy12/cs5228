@@ -13,10 +13,14 @@ import fire
 import pandas as pd
 from preprocessing.data_processing import clean_data, process_data
 
-def run(conf_name):
-  print('running with ' + conf_name)
-  conf = getattr(sk_config, conf_name)
-  print(conf)
+def run(conf_name, is_hp_tune=False):
+  if not is_hp_tune:
+    print('running with ' + conf_name)
+    conf = getattr(sk_config, conf_name)
+    print(conf)
+  else:
+    conf = conf_name
+    print(conf)
   DATA_DIR = './data'
 
   train_final = os.path.join(DATA_DIR, 'train_final.csv')
@@ -30,7 +34,7 @@ def run(conf_name):
   else:
     feature_norm = conf['feature_norm']
 
-  train_kfold(conf['features'], conf['cat_features'],
+  return train_kfold(conf['features'], conf['cat_features'],
                           train_df_cleaned_final, conf['target'], 10, 
                           pipelines=conf['pipelines'], feature_norm=feature_norm)
 

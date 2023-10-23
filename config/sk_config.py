@@ -95,19 +95,6 @@ lg_9_conf = {
 }
 
 
-
-lg_12_conf = {
-    "features": ['floor_area_sqm',
-                         'age',
-                         'date',
-                         'town_psqm','regional_psqm'],
-    "cat_features": ['flat_model', 'flat_type', 'region', 'subzone', 'town', 'planning_area'],
-    "target": ['monthly_rent'],
-    'feature_norm': 'z_norm',
-    "pipelines": [LinearRegression()]
-}
-
-
 # with additional data
 lg_10_conf = {
     "features": ['floor_area_sqm',
@@ -149,7 +136,7 @@ mlp_1_conf = {
                          'nearest_mall_dist',
                          'nearest_school_dist',
                          'date',
-                         'price'
+                        #  'price'
                          ],
     "cat_features": ['flat_type', 'flat_model', 'region', 'subzone', 'planning_area', 'town'],
     "target": 'monthly_rent',
@@ -169,7 +156,7 @@ mlp_2_conf = {
                          'nearest_mall_dist',
                          'nearest_school_dist',
                          'date',
-                         'price'
+                        #  'price'
                          ],
     "cat_features": ['flat_type', 'flat_model', 'region', 'subzone', 'planning_area', 'town'],
     "target": 'monthly_rent',
@@ -189,7 +176,7 @@ mlp_3_conf = {
                          'nearest_mall_dist',
                          'nearest_school_dist',
                          'date',
-                         'price'
+                        #  'price'
                          ],
     "cat_features": ['flat_type', 'flat_model', 'region', 'subzone', 'planning_area', 'town'],
     "target": 'monthly_rent',
@@ -209,7 +196,7 @@ mlp_4_conf = {
                          'nearest_mall_dist',
                          'nearest_school_dist',
                          'date',
-                         'price'
+                        #  'price'
                          ],
     "cat_features": ['flat_type', 'flat_model', 'region', 'subzone', 'planning_area', 'town'],
     "target": 'monthly_rent',
@@ -230,7 +217,7 @@ mlp_5_conf = {
                          'nearest_mall_dist',
                          'nearest_school_dist',
                          'date',
-                         'price'
+                        #  'price'
                          ],
     "cat_features": ['flat_type', 'flat_model', 'region', 'subzone', 'planning_area', 'town'],
     "target": 'monthly_rent',
@@ -251,7 +238,7 @@ mlp_6_conf = {
                          'nearest_mall_dist',
                          'nearest_school_dist',
                          'date',
-                         'price'
+                        #  'price'
                          ],
     "cat_features": ['flat_type', 'flat_model', 'region', 'subzone', 'planning_area', 'town'],
     "target": 'monthly_rent',
@@ -272,7 +259,7 @@ mlp_7_conf = {
                          'nearest_mall_dist',
                          'nearest_school_dist',
                          'date',
-                         'price'
+                        #  'price'
                          ],
     "cat_features": ['flat_type', 'flat_model', 'region', 'subzone', 'planning_area', 'town'],
     "target": 'monthly_rent',
