@@ -1,11 +1,11 @@
 from datetime import datetime
 import pandas as pd
-from sklearnex import patch_sklearn
+#from sklearnex import patch_sklearn
 import sys
 import os
 sys.path.append('..')
 sys.path.append(os.getcwd())
-patch_sklearn()
+#patch_sklearn()
 from sklearn.cluster import KMeans
 from sklearn.preprocessing import LabelEncoder, OneHotEncoder
 import math
