@@ -59,6 +59,9 @@ def train_kfold(features, cat_features, df, target, k, feature_norm='', pipeline
     train_pred = model.predict(X_train)
     train_mae = mean_absolute_error(y_train, train_pred)
     r2_train = r2_score(y_train, train_pred)
+
+    if len(y_pred.shape) == 2:
+      y_pred, y_test = np.squeeze(y_pred), np.squeeze(y_test)
     val_mae, val_pcc = mean_absolute_error(y_test, y_pred), np.corrcoef(y_pred, y_test)[0][1]
     val_mape = mean_absolute_percentage_error(y_test, y_pred)
     
