@@ -103,7 +103,7 @@ lg_12_conf = {
                          'town_psqm','regional_psqm'],
     "cat_features": ['flat_model', 'flat_type', 'region', 'subzone', 'town', 'planning_area'],
     "target": ['monthly_rent'],
-    'feature_norm': 'min_max_norm',
+    'feature_norm': 'z_norm',
     "pipelines": [LinearRegression()]
 }
 
@@ -131,7 +131,6 @@ lg_11_conf = {
                          'nearest_mall_dist',
                          'nearest_school_dist',
                          'date',
-                         'price'
                          ],
     "cat_features": ['flat_type', 'flat_model', 'region', 'subzone', 'planning_area', 'town'],
     "target": 'monthly_rent',
