@@ -265,7 +265,7 @@ mlp_7_conf = {
     "target": 'monthly_rent',
     "pipelines": [StandardScaler(), 
                                    MLPRegressor(random_state=1, max_iter=1000, hidden_layer_sizes=(500,), 
-                                                learning_rate='adaptive', early_stopping=True)]
+                                                learning_rate='adaptive', early_stopping=True, alpha=0.001)]
 }
 
 # base_conf = {
