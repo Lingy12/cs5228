@@ -20,6 +20,7 @@ def train_kfold(features, cat_features, df, target, k, feature_norm='', pipeline
   df = df.copy()
   # print(df.head())
   kf = KFold(n_splits=k)
+  num_features = features
   model = make_pipeline(*pipelines)
   print(model)
 #   print(model)
@@ -48,7 +49,7 @@ def train_kfold(features, cat_features, df, target, k, feature_norm='', pipeline
     train_df, val_df = generate_features(train_df, val_df)
     
     if len(cat_features) != 0:
-        joined_df = combined_encoding(train_df, val_df, cat_features=cat_features, is_val=True)
+        joined_df = combined_encoding(train_df, val_df, cat_features=cat_features, is_val=True, num_features=num_features)
         train_df, val_df = joined_df[joined_df['split'] == 'train'].reset_index(drop=True), joined_df[joined_df['split'] == 'test'].reset_index(drop=True)
     # print(val_df.columns)
     X_train, X_test, y_train, y_test = train_df[features].to_numpy(), val_df[features].to_numpy(), train_df[target].to_numpy(), val_df[target].to_numpy()
@@ -76,6 +77,7 @@ def train_kfold(features, cat_features, df, target, k, feature_norm='', pipeline
 
 def generate_prediction(features, cat_features, train_df, test_df, target, feature_norm='', pipelines=[StandardScaler(), LinearRegression()]):
   # if no normalize, then do not need to split features and cat_features
+  num_features = features
   train_df_cleaned = clean_data(train_df)
   test_df_cleaned = clean_data(test_df)
   processed_train = process_data(train_df_cleaned)
@@ -87,7 +89,7 @@ def generate_prediction(features, cat_features, train_df, test_df, target, featu
   print(len(train_df), len(test_df))
   
   if len(cat_features) != 0:
-    joined_df = combined_encoding(train_df, test_df, cat_features=cat_features)
+    joined_df = combined_encoding(train_df, test_df, cat_features=cat_features,num_features=num_features)
     train_df, test_df = joined_df[joined_df['split'] == 'train'].reset_index(drop=True), joined_df[joined_df['split'] == 'test'].reset_index(drop=True)
   # print(df.head())
   

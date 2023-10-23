@@ -48,8 +48,9 @@ def process_data(df, mode = 'train'):
   df['age_bin'] = bin_values(df['age_year'], step_size=5, right_bound=30, transformation_function=lambda x: 1.5*x)
   return df
 
-def combined_encoding(train_df, test_df, cat_features, is_val=False):
-    norm_columns = ['age', 'town_psqm','regional_psqm','date', 'floor_area_sqm']
+def combined_encoding(train_df, test_df, num_features, cat_features, is_val=False):
+
+    norm_columns = num_features
     train_df, test_df = train_df.copy(), test_df.copy()
     test_df['monthly_rent'] = 'NA' if not is_val else test_df['monthly_rent']
     test_df['split'] = 'test'
@@ -61,6 +62,8 @@ def combined_encoding(train_df, test_df, cat_features, is_val=False):
     for col in norm_columns:
         df[col + '_z_norm'] = z_norm_col(col, df)
         df[col + '_min_max_norm'] = min_max_col(col, df)
+    print(df[list(map(lambda x: x + '_min_max_norm', norm_columns))].isnull())
+    exit()
     # print(len(df))
     return df
     

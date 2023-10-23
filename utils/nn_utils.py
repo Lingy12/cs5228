@@ -97,6 +97,7 @@ def train(model, X_train, y_train, X_val, y_val, epochs, learning_rate, batch_si
 
 
 def train_kfold(features, cat_features, df, target, k, model_class, model_params, epoches, feature_norm, device, batch_size, lr, verbose=1):
+  num_features = features
   # if no normalize, then do not need to split features and cat_features
   df = df.copy()
   # print(df.head())
@@ -133,7 +134,7 @@ def train_kfold(features, cat_features, df, target, k, model_class, model_params
     train_df, val_df = generate_features(train_df, val_df)
     
     if len(cat_features) != 0:
-        joined_df = combined_encoding(train_df, val_df, cat_features=cat_features, is_val=True)
+        joined_df = combined_encoding(train_df, val_df, cat_features=cat_features, is_val=True, num_features=num_features)
         train_df, val_df = joined_df[joined_df['split'] == 'train'].reset_index(drop=True), joined_df[joined_df['split'] == 'test'].reset_index(drop=True)
     # print(val_df.columns)
     X_train, X_test, y_train, y_test = train_df[features].to_numpy(), val_df[features].to_numpy(), train_df[target].to_numpy(), val_df[target].to_numpy()
@@ -160,6 +161,7 @@ def train_kfold(features, cat_features, df, target, k, model_class, model_params
   return output
 
 def generate_prediction(features, cat_features, train_df, test_df, target, model_class, model_params, epoches, feature_norm, device, batch_size, lr, verbose=1):
+  num_features = features
   # if no normalize, then do not need to split features and cat_features
   train_df_cleaned = clean_data(train_df)
   test_df_cleaned = clean_data(test_df)
@@ -172,7 +174,7 @@ def generate_prediction(features, cat_features, train_df, test_df, target, model
   train_df, test_df = generate_features(processed_train, processed_test)
   print(len(train_df), len(test_df))  
   if len(cat_features) != 0:
-    joined_df = combined_encoding(train_df, test_df, cat_features=cat_features)
+    joined_df = combined_encoding(train_df, test_df, cat_features=cat_features, num_features=num_features)
     train_df, test_df = joined_df[joined_df['split'] == 'train'].reset_index(drop=True), joined_df[joined_df['split'] == 'test'].reset_index(drop=True)
   # print(df.head())
   

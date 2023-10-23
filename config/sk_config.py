@@ -94,6 +94,20 @@ lg_9_conf = {
     "pipelines": [StandardScaler(), LinearRegression()]
 }
 
+
+
+lg_12_conf = {
+    "features": ['floor_area_sqm',
+                         'age',
+                         'date',
+                         'town_psqm','regional_psqm'],
+    "cat_features": ['flat_model', 'flat_type', 'region', 'subzone', 'town', 'planning_area'],
+    "target": ['monthly_rent'],
+    'feature_norm': 'min_max_norm',
+    "pipelines": [LinearRegression()]
+}
+
+
 # with additional data
 lg_10_conf = {
     "features": ['floor_area_sqm',

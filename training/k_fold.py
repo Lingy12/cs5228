@@ -28,7 +28,7 @@ def run(conf_name):
   if 'feature_norm' not in conf:
     feature_norm = ''
   else:
-    feature_norm = feature_norm
+    feature_norm = conf['feature_norm']
 
   train_kfold(conf['features'], conf['cat_features'],
                           train_df_cleaned_final, conf['target'], 10, 
