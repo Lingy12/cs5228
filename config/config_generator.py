@@ -44,6 +44,6 @@ def get_mlp_hp_conf():
                                      early_stopping=early_stopping, learning_rate=learning_rate, tol=tol, validation_fraction=validate_fraction))
         conf_template['pipelines'] = pipeline
         configs.append(conf_template.copy())
-        names.append('_'.join([hidden_layer, batch_size, learning_rate, init_learning_rate, early_stopping, tol, validate_fraction]))
+        names.append('_'.join([str(hidden_layer), str(batch_size), str(learning_rate), str(init_learning_rate), str(early_stopping), str(tol), str(validate_fraction)]))
 
-    return configs, names
+    return list(zip(configs, names))

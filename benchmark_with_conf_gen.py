@@ -9,7 +9,7 @@ def run_gen(generator, run_name):
     
     res_dict = {}
     configs = config_func()
-
+    # print(configs)
     for conf, name in configs:
         res = run(conf, is_hp_tune=True)
         res_dict[name] = res 
