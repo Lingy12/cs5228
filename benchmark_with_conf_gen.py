@@ -10,9 +10,9 @@ def run_gen(generator, run_name):
     res_dict = {}
     configs = config_func()
 
-    for conf in configs:
+    for conf, name in configs:
         res = run(conf, is_hp_tune=True)
-        res_dict[json.dumps(conf)] = res 
+        res_dict[name] = res 
 
     with open(os.path.join('logs', run_name + '.json'), 'w') as f:
         json.dump(res_dict, f)

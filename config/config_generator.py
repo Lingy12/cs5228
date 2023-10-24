@@ -14,6 +14,7 @@ def get_mlp_hp_conf():
 
     params = list(itertools.product(*[hidden_layer_lst, batch_size_lst, init_learning_rate_lst, early_stopping_lst, learning_rate_lst, scaler_lst, tol_lst, validate_fraction_lst]))
     configs = []
+    names = []
 
     conf_template = {
         "features": ['floor_area_sqm',
@@ -43,5 +44,6 @@ def get_mlp_hp_conf():
                                      early_stopping=early_stopping, learning_rate=learning_rate, tol=tol, validation_fraction=validate_fraction))
         conf_template['pipelines'] = pipeline
         configs.append(conf_template.copy())
+        names.append('_'.join(hidden_layer, batch_size, learning_rate, init_learning_rate, early_stopping, tol, validate_fraction))
 
-    return configs
+    return configs, names
