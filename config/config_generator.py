@@ -4,13 +4,13 @@ from sklearn.neural_network import MLPRegressor
 import itertools
 def get_mlp_hp_conf():
     hidden_layer_lst = [50, 100, 200, 500, 1000] 
-    batch_size_lst = [16, 32, 128, 200, 512]
-    init_learning_rate_lst = [0.01, 0.001]
+    batch_size_lst = [200]
+    init_learning_rate_lst = [0.001]
     early_stopping_lst = [True]
     learning_rate_lst = ['adaptive']
     scaler_lst = [None, StandardScaler(), MinMaxScaler()]
-    tol_lst = [1e-4, 1, 10]
-    validate_fraction_lst = [0.1, 0.01]
+    tol_lst = [1e-4]
+    validate_fraction_lst = [0.1]
 
     params = list(itertools.product(*[hidden_layer_lst, batch_size_lst, init_learning_rate_lst, early_stopping_lst, learning_rate_lst, scaler_lst, tol_lst, validate_fraction_lst]))
     configs = []
