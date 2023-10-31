@@ -40,7 +40,7 @@ def get_mlp_hp_conf():
         hidden_layer, batch_size, init_learning_rate, early_stopping, learning_rate, scaler, tol, validate_fraction = param
         if scaler:
             pipeline.append(scaler)
-        pipeline.append(MLPRegressor(hidden_layer_sizes=hidden_layer, batch_size=batch_size, learning_rate_init=init_learning_rate, 
+        pipeline.append(MLPRegressor(random_state=1, hidden_layer_sizes=(hidden_layer, ), batch_size=batch_size, learning_rate_init=init_learning_rate, 
                                      early_stopping=early_stopping, learning_rate=learning_rate, tol=tol, validation_fraction=validate_fraction, max_iter=1000))
         conf_template['pipelines'] = pipeline
         configs.append(conf_template.copy())
@@ -49,7 +49,7 @@ def get_mlp_hp_conf():
     return list(zip(configs, names))
 
 def get_scaler_conf():
-    model = [LinearRegression(), MLPRegressor(hidden_layer_sizes=200, batch_size=200, learning_rate_init=0.001, early_stopping=True, learning_rate='adaptive', max_iter=1000)]
+    model = [LinearRegression(), MLPRegressor(random_state=1, hidden_layer_sizes=200, batch_size=200, learning_rate_init=0.001, early_stopping=True, learning_rate='adaptive', max_iter=1000)]
     scaler_lst = [None, StandardScaler(), MinMaxScaler()]
 
     params = list(itertools.product(*[model, scaler_lst]))
