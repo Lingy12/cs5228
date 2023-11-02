@@ -20,7 +20,7 @@ The pre-generated data is alread in data/train_final.csv and data/test_final.csv
 python training/k_fold.py <base_conf>
 ```
 
-Add your new configuration in config/sk_config.py, and replace the "base_conf" with your new config name.
+Add your new configuration in config/sk_config.py, and replace the "base_conf" with config in config/sk_config.py.
 
 ### Generate prediction
 
@@ -28,7 +28,7 @@ Add your new configuration in config/sk_config.py, and replace the "base_conf" w
 python prediction/sk_prediction.py <base_conf> 
 ```
 
-Add your new configuration in config/sk_config.py, and replace the "base_conf" with your new config name.
+Add your new configuration in config/sk_config.py, and replace the base_conf" with config in config/sk_config.py..
 
 ### Benchmark
 
