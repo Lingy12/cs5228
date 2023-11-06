@@ -33,16 +33,17 @@ Add your new configuration in config/sk_config.py, and replace the base_conf" wi
 ### Benchmark
 
 ```python
-python benchmarks.py
+python benchmarks.py > file.log # use python statistic_extract.py file.log <xlsx destination> to extract result
 
-python benchmark_with_conf_gen.py <generator_name> <run_name>
+python benchmark_with_conf_gen.py <generator_name> <run_name> # This will generate a json file named under run_name in logs directory (please mkdir first if you don't have)
+# Use python statistic_extract_json.py logs/<run_name>.json to produce the result
 ```
 
 This script "benchmarks.py" runs all configuration in config/sk_config.py. Which produce the table showing linear regression result and MLP result.
 
 The script "benchmark_with_conf_gen.py" runs a configuration generator in config/config_generator.py. run_name is defined by user for the purpose of this configuration.
 
-### Alternative: Pytorch training (For GPU acceleration only) (Not mained further)
+### Alternative: Pytorch training (For GPU acceleration only) (Not maintaineded further)
 
 ```python
 python training/nn_pipe.py True 500 base_conf base_model_conf BaseMLPRegressor 0.001 128 0
