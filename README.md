@@ -53,6 +53,12 @@ This script "benchmarks.py" runs all configuration in config/sk_config.py. Which
 
 The script "benchmark_with_conf_gen.py" runs a configuration generator in config/config_generator.py. run_name is defined by user for the purpose of this configuration.
 
+### Utility Scripts
+
+1. preprocessing/combined_auxiliary.py contains the functions to produce features from auxiliary data. process_auxiliary basically calling it.
+2. preprocessing/data_processing.py contains the data cleaning and transformation for core data
+3. utils/utils.py contains the k-fold validation pipeline function and generate prediction functionality
+
 ### Alternative: Pytorch training (For GPU acceleration only) (Not maintaineded further)
 
 ```python
