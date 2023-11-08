@@ -1,0 +1,6 @@
+fire
+tqdm
+pandas
+numpy
+plotly
+scikit-learn

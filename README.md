@@ -4,9 +4,19 @@ Computation for nearest MRT, mall, school is expensive. Hence, we pre-generated 
 
 Running script need to be triggered at top level, because relative path is used.
 
+## Set up environment
+
+Prerequisites: Ensure python is installed. Our envionrment is python3.10
+
+```
+pip install -r requirements.txt
+```
+
+ Note that the pytorch related functionality is not included here because it's not used in our benchmarking experiment and prediciton generation
+
 ## Data Pipeline
 
-### Generate processed data frame
+### Generate processed data frame (Optional)
 
 ```python
 python preprocessing/process_auxiliary.py
